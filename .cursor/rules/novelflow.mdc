@@ -1,0 +1,5 @@
+---
+description: NovelFlow AI universal novel-production workflow
+alwaysApply: true
+---
+Read `AGENTS.md` and treat it as mandatory. Use `novelflow` CLI/MCP to inspect and mutate project state. Do not bypass canon or chapter approval.

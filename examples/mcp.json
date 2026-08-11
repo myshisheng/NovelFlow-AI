@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "novelflow": {
+      "command": "novelflow-mcp"
+    }
+  }
+}
