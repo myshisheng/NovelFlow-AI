@@ -4,12 +4,13 @@
 
 NovelFlow AI 不绑定某一家模型。它把小说工程状态独立保存，所以可以随时换 Codex、Claude Code、Gemini CLI、Cursor、Windsurf、Cline、Roo、OpenCode、Aider，或任何能够读取文件、执行终端命令或调用 MCP 的桌面 AI。
 
-> v0.1 是一个可运行核心库：项目状态、任务队列、Canon 长期记忆、伏笔、章节摘要、上下文打包、封面占位/导入、导出、CLI、本地 Dashboard、MCP stdio server、桌面 AI 规则文件、测试与 GitHub Actions 已包含。
+> v0.1.1 是当前补丁版本：在 v0.1 可运行核心库基础上，统一 CLI、Python 包与 MCP Server 的版本信息，并新增 `novelflow --version`。
 
 ## 快速开始
 
 ```bash
 python -m pip install -e .
+novelflow --version
 
 novelflow init ./my-book \
   --idea "都市异能：主角每天可以暂停时间十秒" \
@@ -145,4 +146,4 @@ novelflow-mcp
 python -m unittest discover -s tests -v
 ```
 
-更多说明见 `docs/ARCHITECTURE.md`、`docs/DESKTOP_AI.md`、`docs/WORKFLOW.md`。
+版本变更见 `CHANGELOG.md`。更多说明见 `docs/ARCHITECTURE.md`、`docs/DESKTOP_AI.md`、`docs/WORKFLOW.md`。

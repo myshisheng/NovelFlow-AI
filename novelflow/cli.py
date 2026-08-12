@@ -1,6 +1,7 @@
 from __future__ import annotations
 import argparse,json,sys
 from pathlib import Path
+from . import __version__
 from .canon import add_fact,add_foreshadow,report,resolve_foreshadow
 from .chapters import approve,set_chapter,set_chapter_summary
 from .context import build_context
@@ -38,7 +39,7 @@ def cmd_export(a): print(export_book(R(a.path),a.format))
 def cmd_serve(a): serve(R(a.path),a.host,a.port)
 
 def parser():
-    p=argparse.ArgumentParser(prog="novelflow"); s=p.add_subparsers(dest="cmd",required=True)
+    p=argparse.ArgumentParser(prog="novelflow"); p.add_argument("--version",action="version",version=f"%(prog)s {__version__}"); s=p.add_subparsers(dest="cmd",required=True)
     x=s.add_parser("init"); x.add_argument("path"); x.add_argument("--idea",required=True); x.add_argument("--platform",default="番茄"); x.add_argument("--genre",default="网文"); x.add_argument("--target-words",type=int,default=1000000); x.add_argument("--chapters",type=int,default=500); x.add_argument("--title",default=""); x.set_defaults(func=cmd_init)
     for name,func in [("bootstrap",cmd_bootstrap),("status",cmd_status),("next",cmd_next),("canon-report",cmd_report),("cover-placeholder",cmd_cp)]: x=s.add_parser(name); x.add_argument("path"); x.set_defaults(func=func)
     x=s.add_parser("prompt"); x.add_argument("path"); x.add_argument("task_id",nargs="?"); x.add_argument("--last",type=int,default=5); x.set_defaults(func=cmd_prompt)

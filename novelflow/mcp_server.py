@@ -2,6 +2,7 @@ from __future__ import annotations
 import json,sys
 from pathlib import Path
 from typing import Any
+from . import __version__
 from .canon import add_fact,add_foreshadow,report,resolve_foreshadow
 from .chapters import approve,set_chapter,set_chapter_summary
 from .context import build_context
@@ -51,7 +52,7 @@ def call(n,a):
 def response(q):
     m=q.get("method"); rid=q.get("id")
     if m=="notifications/initialized": return None
-    if m=="initialize": return {"jsonrpc":"2.0","id":rid,"result":{"protocolVersion":q.get("params",{}).get("protocolVersion") or PROTOCOL_VERSION,"capabilities":{"tools":{"listChanged":False}},"serverInfo":{"name":"novelflow-ai","version":"0.1.0"}}}
+    if m=="initialize": return {"jsonrpc":"2.0","id":rid,"result":{"protocolVersion":q.get("params",{}).get("protocolVersion") or PROTOCOL_VERSION,"capabilities":{"tools":{"listChanged":False}},"serverInfo":{"name":"novelflow-ai","version":__version__}}}
     if m=="ping": return {"jsonrpc":"2.0","id":rid,"result":{}}
     if m=="tools/list": return {"jsonrpc":"2.0","id":rid,"result":{"tools":TOOLS}}
     if m=="tools/call":
