@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "novelflow-ai"
-version = "0.1.1"
+version = "0.1.2"
 description = "Universal AI web-fiction production workflow: idea to cover to completion"
 readme = "README.md"
 requires-python = ">=3.10"
