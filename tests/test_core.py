@@ -4,6 +4,7 @@ from novelflow import __version__
 from novelflow.canon import add_fact,add_foreshadow,report,resolve_foreshadow
 from novelflow.chapters import approve,set_chapter,set_chapter_summary
 from novelflow.context import build_context
+from novelflow.doctor import diagnose
 from novelflow.exporters import export_book
 from novelflow.mcp_server import response
 from novelflow.storage import complete_task,init_project,list_tasks
@@ -24,6 +25,11 @@ class T(unittest.TestCase):
     def test_export(self):
         set_chapter(self.root,1,"# 第一章\n你好，世界。"); set_chapter_summary(self.root,1,"开场")
         for f in ("txt","md","html"): self.assertTrue(export_book(self.root,f).exists())
+    def test_doctor(self):
+        healthy=diagnose(self.root); self.assertTrue(healthy["ok"]); self.assertEqual(healthy["errors"],[])
+        set_chapter(self.root,1,"# 第1章\n正文"); set_chapter_summary(self.root,1,"摘要"); approve(self.root,1)
+        (self.root/"summaries"/"0001-summary.md").unlink()
+        broken=diagnose(self.root); self.assertFalse(broken["ok"]); self.assertTrue(any("missing summary" in x for x in broken["errors"]))
     def test_mcp_version_matches_package(self):
         r=response({"jsonrpc":"2.0","id":1,"method":"initialize","params":{}})
         self.assertEqual(r["result"]["serverInfo"]["version"],__version__)

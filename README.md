@@ -4,7 +4,7 @@
 
 NovelFlow AI 不绑定某一家模型。它把小说工程状态独立保存，所以可以随时换 Codex、Claude Code、Gemini CLI、Cursor、Windsurf、Cline、Roo、OpenCode、Aider，或任何能够读取文件、执行终端命令或调用 MCP 的桌面 AI。
 
-> v0.1.1 是当前补丁版本：在 v0.1 可运行核心库基础上，统一 CLI、Python 包与 MCP Server 的版本信息，并新增 `novelflow --version`。
+> v0.1.2 新增项目健康检查：使用 `novelflow doctor` 可以在继续写作、迁移项目或交给桌面 AI 接管前，检查目录、Canon、任务与已批准章节是否完整。
 
 ## 快速开始
 
@@ -20,6 +20,7 @@ novelflow init ./my-book \
   --chapters 600
 
 novelflow bootstrap ./my-book
+novelflow doctor ./my-book
 novelflow status ./my-book
 novelflow prompt ./my-book
 ```
@@ -27,7 +28,7 @@ novelflow prompt ./my-book
 然后对桌面 AI 说：
 
 ```text
-继续 NovelFlow 项目。读取 AGENTS.md，领取下一个任务，按任务提示完成并提交，然后继续推进。
+继续 NovelFlow 项目。读取 AGENTS.md，先运行 novelflow doctor 检查项目，再领取下一个任务，按任务提示完成并提交，然后继续推进。
 ```
 
 ## 一条龙工作流
@@ -48,6 +49,23 @@ chapter_plan:N
    ↓
 chapter_plan:N+1 → ... → finale → epilogue → final audit → export
 ```
+
+## 项目自检
+
+```bash
+novelflow doctor ./my-book
+```
+
+`doctor` 会检查：
+
+- `novel.json` 的关键字段和项目目录是否完整；
+- `metadata.md`、`story_bible.md`、`master_outline.md` 是否存在；
+- `state/canon.json` 是否可解析、关键数据结构是否存在；
+- `tasks/*.json` 是否损坏、任务状态是否合法；
+- 已批准章节是否同时存在正文和摘要；
+- `approved_chapters` 与批准章节编号列表是否一致。
+
+检查通过时输出 `"ok": true`。发现会破坏工作流的错误时输出 `"ok": false`，并返回非零退出码，方便脚本、CI 和桌面 AI 自动判断是否应停止继续生成。
 
 ## 通用兼容策略
 
