@@ -7,6 +7,7 @@ from .chapters import approve,set_chapter,set_chapter_summary
 from .context import build_context
 from .cover import placeholder as make_placeholder
 from .dashboard import serve
+from .doctor import diagnose
 from .exporters import export_book
 from .storage import complete_task,ensure_project,get_task,init_project,list_tasks,manifest,set_cover
 from .util import read_text
@@ -17,6 +18,9 @@ def cmd_init(a): print(init_project(a.path,idea=a.idea,platform=a.platform,genre
 def cmd_bootstrap(a): print(json.dumps(bootstrap(R(a.path)),ensure_ascii=False,indent=2))
 def cmd_status(a):
     r=R(a.path); ts=list_tasks(r); print(json.dumps({"project":manifest(r),"tasks":{"pending":sum(t['status']=='pending' for t in ts),"in_progress":sum(t['status']=='in_progress' for t in ts),"done":sum(t['status']=='done' for t in ts)},"canon":report(r)},ensure_ascii=False,indent=2))
+def cmd_doctor(a):
+    result=diagnose(a.path); print(json.dumps(result,ensure_ascii=False,indent=2))
+    if not result["ok"]: raise SystemExit(1)
 def cmd_next(a):
     t=next_task(R(a.path)); print(json.dumps(t,ensure_ascii=False,indent=2) if t else "NO_TASK")
 def cmd_prompt(a):
@@ -41,7 +45,7 @@ def cmd_serve(a): serve(R(a.path),a.host,a.port)
 def parser():
     p=argparse.ArgumentParser(prog="novelflow"); p.add_argument("--version",action="version",version=f"%(prog)s {__version__}"); s=p.add_subparsers(dest="cmd",required=True)
     x=s.add_parser("init"); x.add_argument("path"); x.add_argument("--idea",required=True); x.add_argument("--platform",default="番茄"); x.add_argument("--genre",default="网文"); x.add_argument("--target-words",type=int,default=1000000); x.add_argument("--chapters",type=int,default=500); x.add_argument("--title",default=""); x.set_defaults(func=cmd_init)
-    for name,func in [("bootstrap",cmd_bootstrap),("status",cmd_status),("next",cmd_next),("canon-report",cmd_report),("cover-placeholder",cmd_cp)]: x=s.add_parser(name); x.add_argument("path"); x.set_defaults(func=func)
+    for name,func in [("bootstrap",cmd_bootstrap),("status",cmd_status),("doctor",cmd_doctor),("next",cmd_next),("canon-report",cmd_report),("cover-placeholder",cmd_cp)]: x=s.add_parser(name); x.add_argument("path"); x.set_defaults(func=func)
     x=s.add_parser("prompt"); x.add_argument("path"); x.add_argument("task_id",nargs="?"); x.add_argument("--last",type=int,default=5); x.set_defaults(func=cmd_prompt)
     x=s.add_parser("complete"); x.add_argument("path"); x.add_argument("task_id"); x.add_argument("--file",required=True); x.set_defaults(func=cmd_complete)
     x=s.add_parser("context"); x.add_argument("path"); x.add_argument("--chapter",type=int); x.add_argument("--last",type=int,default=5); x.set_defaults(func=cmd_context)
